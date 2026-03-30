@@ -72,6 +72,23 @@
       color: var(--gold);
     }
 
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-link {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover { color: var(--offwhite); }
+
     .nav-cta {
       font-size: 0.72rem;
       letter-spacing: 0.2em;
@@ -391,7 +408,10 @@
   <!-- NAV -->
   <nav>
     <a href="#" class="nav-logo">C<span>A</span>Ps</a>
-    <a href="https://wa.me/918877013050?text=Hi%20CAPs!%20I%27d%20like%20to%20book%20your%20services." target="_blank" class="nav-cta">Book Now</a>
+    <div class="nav-links">
+      <a href="https://aaryan5678.github.io/caps-google-static/gallery.html" class="nav-link">Gallery</a>
+      <a href="https://wa.me/918877013050?text=Hi%20CAPs!%20I%27d%20like%20to%20book%20your%20services." target="_blank" class="nav-cta">Book Now</a>
+    </div>
   </nav>
 
   <!-- HERO -->
