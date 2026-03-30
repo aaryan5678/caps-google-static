@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Creative Aperture Production</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #080808;
+      --offwhite: #f0ece4;
+      --gold: #c9a84c;
+      --gold-dim: #8a6f32;
+      --grey: #2a2a2a;
+      --text-muted: #888;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--offwhite);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.4;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 48px;
+      mix-blend-mode: normal;
+    }
+
+    nav::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.9), transparent);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--offwhite);
+      text-decoration: none;
+    }
+
+    .nav-logo span {
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-link {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover { color: var(--offwhite); }
+
+    .nav-cta {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-decoration: none;
+      border: 1px solid var(--gold-dim);
+      padding: 10px 22px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-cta:hover {
+      background: var(--gold);
+      color: var(--black);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 48px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(201,168,76,0.07) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 60% at 20% 80%, rgba(201,168,76,0.04) 0%, transparent 50%),
+        linear-gradient(180deg, #0d0d0d 0%, #080808 100%);
+    }
+
+    /* Aperture ring decoration */
+    .aperture {
+      position: absolute;
+      top: 50%;
+      right: 8%;
+      transform: translateY(-50%);
+      width: 420px;
+      height: 420px;
+      opacity: 0.06;
+      animation: slowspin 40s linear infinite;
+    }
+
+    @keyframes slowspin {
+      to { transform: translateY(-50%) rotate(360deg); }
+    }
+
+    .aperture circle {
+      fill: none;
+      stroke: var(--gold);
+    }
+
+    .hero-eyebrow {
+      font-size: 0.68rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3.2rem, 7vw, 6.5rem);
+      font-weight: 300;
+      line-height: 1.05;
+      letter-spacing: -0.01em;
+      max-width: 700px;
+      opacity: 0;
+      animation: fadeUp 1s 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-tagline {
+      margin-top: 28px;
+      font-size: 0.82rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      opacity: 0;
+      animation: fadeUp 1s 0.7s forwards;
+    }
+
+    .hero-actions {
+      margin-top: 48px;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      opacity: 0;
+      animation: fadeUp 1s 0.9s forwards;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--gold);
+      color: var(--black);
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 16px 32px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+      background: var(--offwhite);
+    }
+
+    .btn-primary svg {
+      width: 16px; height: 16px;
+    }
+
+    .scroll-hint {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .scroll-hint::before {
+      content: '';
+      width: 40px;
+      height: 1px;
+      background: var(--text-muted);
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SERVICES */
+    .services {
+      padding: 120px 48px;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 64px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      max-width: 60px;
+      height: 1px;
+      background: var(--gold-dim);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2px;
+    }
+
+    .service-item {
+      padding: 36px 32px;
+      border: 1px solid #181818;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-item::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.4s ease;
+    }
+
+    .service-item:hover::before { width: 100%; }
+    .service-item:hover { background: #0f0f0f; }
+
+    .service-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.75rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.2em;
+      margin-bottom: 16px;
+    }
+
+    .service-name {
+      font-size: 0.95rem;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      color: var(--offwhite);
+    }
+
+    /* ABOUT STRIP */
+    .about-strip {
+      padding: 100px 48px;
+      border-top: 1px solid #1a1a1a;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300;
+      line-height: 1.2;
+    }
+
+    .about-heading em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .about-text {
+      font-size: 0.9rem;
+      line-height: 1.9;
+      color: #aaa;
+    }
+
+    .about-text p + p { margin-top: 20px; }
+
+    /* CTA SECTION */
+    .cta-section {
+      padding: 120px 48px;
+      border-top: 1px solid #1a1a1a;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 300px;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.06), transparent 70%);
+      pointer-events: none;
+    }
+
+    .cta-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: 300;
+      margin-bottom: 16px;
+    }
+
+    .cta-sub {
+      font-size: 0.8rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 48px;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 40px 48px;
+      border-top: 1px solid #1a1a1a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .footer-brand span { color: var(--gold); }
+
+    .footer-copy {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 24px 24px; }
+      .hero { padding: 0 24px 64px; }
+      .aperture { display: none; }
+      .services { padding: 80px 24px; }
+      .about-strip { grid-template-columns: 1fr; gap: 40px; padding: 80px 24px; }
+      .cta-section { padding: 80px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">C<span>A</span>Ps</a>
+    <div class="nav-links">
+      <a href="https://aaryan5678.github.io/caps-google-static/gallery.html" class="nav-link">Gallery</a>
+      <a href="https://wa.me/918877013050?text=Hi%20CAPs!%20I%27d%20like%20to%20book%20your%20services." target="_blank" class="nav-cta">Book Now</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+
+    <!-- Aperture SVG -->
+    <svg class="aperture" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="200" cy="200" r="180" stroke-width="1"/>
+      <circle cx="200" cy="200" r="150" stroke-width="0.5"/>
+      <circle cx="200" cy="200" r="120" stroke-width="1.5"/>
+      <circle cx="200" cy="200" r="80" stroke-width="0.5"/>
+      <line x1="20" y1="200" x2="380" y2="200" stroke="#c9a84c" stroke-width="0.4"/>
+      <line x1="200" y1="20" x2="200" y2="380" stroke="#c9a84c" stroke-width="0.4"/>
+      <line x1="74" y1="74" x2="326" y2="326" stroke="#c9a84c" stroke-width="0.4"/>
+      <line x1="326" y1="74" x2="74" y2="326" stroke="#c9a84c" stroke-width="0.4"/>
+    </svg>
+
+    <p class="hero-eyebrow">Photography &amp; Videography Studio</p>
+    <h1 class="hero-title">We craft stories<br/>that <em>last forever.</em></h1>
+    <p class="hero-tagline">Roll Camera. Action.</p>
+    <div class="hero-actions">
+      <a href="https://wa.me/918877013050?text=Hi%20CAPs!%20I%27d%20like%20to%20book%20your%20services." target="_blank" class="btn-primary">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.535 5.858L.057 23.15a.75.75 0 0 0 .916.932l5.453-1.432A11.942 11.942 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.667-.516-5.187-1.415l-.371-.22-3.838 1.008 1.028-3.735-.242-.384A9.958 9.958 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+        WhatsApp Us
+      </a>
+      <span class="scroll-hint">Our Services</span>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services">
+    <p class="section-label">What We Do</p>
+    <div class="services-grid">
+      <div class="service-item">
+        <p class="service-num">01</p>
+        <p class="service-name">Wedding Coverage</p>
+      </div>
+      <div class="service-item">
+        <p class="service-num">02</p>
+        <p class="service-name">Documentaries</p>
+      </div>
+      <div class="service-item">
+        <p class="service-num">03</p>
+        <p class="service-name">Corporate Films</p>
+      </div>
+      <div class="service-item">
+        <p class="service-num">04</p>
+        <p class="service-name">Portfolios</p>
+      </div>
+      <div class="service-item">
+        <p class="service-num">05</p>
+        <p class="service-name">Social Media Management</p>
+      </div>
+      <div class="service-item">
+        <p class="service-num">06</p>
+        <p class="service-name">Short Films</p>
+      </div>
+      <div class="service-item">
+        <p class="service-num">07</p>
+        <p class="service-name">Web Series Production</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about-strip">
+    <div>
+      <h2 class="about-heading">Every frame<br/>tells a <em>story.</em></h2>
+    </div>
+    <div>
+      <div class="about-text">
+        <p>Creative Aperture Production (CAPs) is a full-service photography and videography studio dedicated to capturing life's most meaningful moments.</p>
+        <p>From intimate weddings to large-scale corporate productions, we bring creativity, technical excellence, and heart to every project — delivering results that exceed expectations, every single time.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 class="cta-heading">Ready to create?</h2>
+    <p class="cta-sub">Let's bring your vision to life</p>
+    <a href="https://wa.me/918877013050?text=Hi%20CAPs!%20I%27d%20like%20to%20discuss%20a%20project." target="_blank" class="btn-primary">
+      <svg viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.126 1.535 5.858L.057 23.15a.75.75 0 0 0 .916.932l5.453-1.432A11.942 11.942 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.891 0-3.667-.516-5.187-1.415l-.371-.22-3.838 1.008 1.028-3.735-.242-.384A9.958 9.958 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      Start a Conversation
+    </a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p class="footer-brand">Creative <span>Aperture</span> Production</p>
+    <p class="footer-copy">© 2025 CAPs. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>
